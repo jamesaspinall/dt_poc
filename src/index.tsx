@@ -11,9 +11,10 @@ require("dotenv").config();
 
 Sentry.init({
   dsn: process.env.REACT_APP_SENTRY_DSN,
+  release: "dt_poc@" + process.env.npm_package_version,
   autoSessionTracking: true,
   integrations: [new Integrations.BrowserTracing()],
-
+  maxBreadcrumbs: 20,
   // We recommend adjusting this value in production, or using tracesSampler
   // for finer control
   tracesSampleRate: 1.0,
