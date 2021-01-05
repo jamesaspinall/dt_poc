@@ -5,6 +5,21 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { Provider } from "react-redux";
 import { store } from "./store";
+import * as Sentry from "@sentry/react";
+import { Integrations } from "@sentry/tracing";
+require("dotenv").config();
+
+Sentry.init({
+  dsn: process.env.REACT_APP_SENTRY_DSN,
+  release: "dt_poc@" + process.env.npm_package_version,
+  autoSessionTracking: true,
+  integrations: [new Integrations.BrowserTracing()],
+  maxBreadcrumbs: 20,
+  // We recommend adjusting this value in production, or using tracesSampler
+  // for finer control
+  tracesSampleRate: 1.0,
+});
+
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
