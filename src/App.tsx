@@ -1,26 +1,28 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-
-function App() {
+import "./App.css";
+import { connect } from "react-redux";
+import { Table } from "./components/Table";
+import Form from "./components/Form/Form";
+import { addEmployee } from "./store/actions";
+function App({ employees, dispatchAddEmployee }: any) {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1 style={{ marginBottom: 10 }}>Distributed Tracing POC</h1>
+      <Table />
+      <Form />
     </div>
   );
 }
 
-export default App;
+const mapStateToProps = (state: any) => ({
+  state: state,
+  employees: state.employees,
+});
+
+const mapDispatchToProps = (dispatch: any) => {
+  return {
+    dispatchAddEmployee: (firstname: string, lastname: string, email: string) =>
+      dispatch(addEmployee(firstname, lastname, email)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
