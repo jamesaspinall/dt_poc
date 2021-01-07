@@ -29,7 +29,7 @@ const TableRow = ({
               onClick={() => {
                 data.isActive = "false";
                 console.log(data, index);
-                console.log("EMEMP", JSON.stringify(data));
+                console.log("This Is Payload To Backend", JSON.stringify(data));
                 dispatchRemoveEmployee(index);
                 dispatchDeleteEmployee(data);
               }}
