@@ -1,7 +1,6 @@
 import React from "react";
 import { removeEmployee, deleteEmployee } from "../../store/actions";
 import { connect } from "react-redux";
-import { get } from "lodash";
 
 interface IEmployee {
   firstName: string;
@@ -11,7 +10,6 @@ interface IEmployee {
 }
 
 const TableRow = ({
-  state,
   employees,
   data,
   dispatchRemoveEmployee,

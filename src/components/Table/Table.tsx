@@ -15,6 +15,7 @@ const Table: FC = ({ employees, dispatchFetchAllEmployeeTableData }: any) => {
   const tableData = get(employees, "employees", []);
   useEffect(() => {
     dispatchFetchAllEmployeeTableData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
