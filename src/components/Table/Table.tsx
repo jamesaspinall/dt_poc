@@ -1,16 +1,22 @@
-import React, { FC } from "react";
+import React, { FC, useEffect } from "react";
 import TableBody from "./TableBody";
 import TableHead from "./TableHead";
 import { connect } from "react-redux";
 import { get } from "lodash";
-export const data = [
-  { Firstname: "James", Lastname: "Aspinall", Email: "aspin@me.com" },
-  { Firstname: "Kylie", Lastname: "Aspinall", Email: "kylie@me.com" },
-  { Firstname: "Cooper", Lastname: "Aspinall", Email: "woof@me.com" },
-];
+import { fectchAllEmployees } from "../../store/actions";
 
-const Table: FC = ({ employees }: any) => {
+// export const data = [
+//   { firstName: "James", lastName: "Aspinall", Email: "aspin@me.com" },
+//   { firstName: "Kylie", lastName: "Aspinall", Email: "kylie@me.com" },
+//   { firstName: "Cooper", lastName: "Aspinall", Email: "woof@me.com" },
+// ];
+
+const Table: FC = ({ employees, dispatchFetchAllEmployeeTableData }: any) => {
   const tableData = get(employees, "employees", []);
+  useEffect(() => {
+    dispatchFetchAllEmployeeTableData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>
@@ -29,13 +35,13 @@ const Table: FC = ({ employees }: any) => {
 const mapStateToProps = (state: any) => ({
   state: state,
   employees: state.employees,
+  tableData: state.employees.allEmployeesTableData,
 });
 
-// const mapDispatchToProps = (dispatch: any) => {
-//   return {
-//     dispatchAddEmployee: (firstname: string, lastname: string, email: string) =>
-//       dispatch(addEmployee(firstname, lastname, email)),
-//   };
-// };
+const mapDispatchToProps = (dispatch: any) => {
+  return {
+    dispatchFetchAllEmployeeTableData: () => dispatch(fectchAllEmployees()),
+  };
+};
 
-export default connect(mapStateToProps)(Table);
+export default connect(mapStateToProps, mapDispatchToProps)(Table);

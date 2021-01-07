@@ -2,29 +2,33 @@ import React, { useState } from "react";
 import { connect } from "react-redux";
 import {
   addEmployee,
-  setFirstName,
-  setLastName,
+  setfirstName,
+  setlastName,
   setEmail,
 } from "../../store/actions";
 const Form = ({
   dispatchAddEmployee,
-  dispatchSetFirstName,
-  dispatchSetLastName,
+  dispatchSetfirstName,
+  dispatchSetlastName,
   dispatchSetEmail,
 }: any) => {
   const handleSubmit = (event: any) => {
     event.preventDefault();
-    dispatchAddEmployee(employee.firstname, employee.lastname, employee.email);
+    dispatchAddEmployee(employee);
     setEmployee({
-      firstname: "",
-      lastname: "",
+      firstName: "",
+      lastName: "",
       email: "",
+      isActive: "true",
+      id: "",
     });
   };
   const [employee, setEmployee] = useState({
-    firstname: "",
-    lastname: "",
+    firstName: "",
+    lastName: "",
     email: "",
+    isActive: "true",
+    id: "",
   });
 
   const handleChange = (event: any) => {
@@ -41,21 +45,21 @@ const Form = ({
       <div className="flex_input">
         <p>First Name</p>
         <input
-          name="firstname"
-          value={employee.firstname}
+          name="firstName"
+          value={employee.firstName}
           type="text"
           onChange={handleChange}
-          onBlur={(e) => dispatchSetFirstName(e.target.value)}
+          onBlur={(e) => dispatchSetfirstName(e.target.value)}
         />
       </div>
       <div className="flex_input">
         <p>Last Name</p>
         <input
-          name="lastname"
-          value={employee.lastname}
+          name="lastName"
+          value={employee.lastName}
           type="text"
           onChange={handleChange}
-          onBlur={(e) => dispatchSetLastName(e.target.value)}
+          onBlur={(e) => dispatchSetlastName(e.target.value)}
         />
       </div>
       <div className="flex_input">
@@ -63,7 +67,7 @@ const Form = ({
         <input
           name="email"
           value={employee.email}
-          type="email"
+          type="text"
           onChange={handleChange}
           onBlur={(e) => dispatchSetEmail(e.target.value)}
         />
@@ -81,13 +85,17 @@ const mapStateToProps = (state: any) => ({
 
 const mapDispatchToProps = (dispatch: any) => {
   return {
-    dispatchAddEmployee: (firstname: string, lastname: string, email: string) =>
-      dispatch(addEmployee(firstname, lastname, email)),
+    dispatchAddEmployee: (data: {
+      firstName: string;
+      lastName: string;
+      email: string;
+      isActive: string;
+    }) => dispatch(addEmployee(data)),
 
-    dispatchSetFirstName: (firstname: string) =>
-      dispatch(setFirstName(firstname)),
+    dispatchSetfirstName: (firstName: string) =>
+      dispatch(setfirstName(firstName)),
 
-    dispatchSetLastName: (lastname: string) => dispatch(setLastName(lastname)),
+    dispatchSetlastName: (lastName: string) => dispatch(setlastName(lastName)),
 
     dispatchSetEmail: (email: string) => dispatch(setEmail(email)),
   };
