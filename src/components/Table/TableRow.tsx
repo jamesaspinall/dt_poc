@@ -1,18 +1,37 @@
 import React from "react";
-import { removeEmployee } from "../../store/actions";
+import { removeEmployee, deleteEmployee } from "../../store/actions";
 import { connect } from "react-redux";
-const TableRow = ({ data, dispatchRemoveEmployee }: any) => {
+import { get } from "lodash";
+
+interface IEmployee {
+  firstName: string;
+  lastName: string;
+  email: string;
+  isActive: string;
+}
+
+const TableRow = ({
+  state,
+  employees,
+  data,
+  dispatchRemoveEmployee,
+  dispatchDeleteEmployee,
+}: any) => {
   return (
     <>
       {data &&
         data.map((data: any, index: any) => (
           <tr key={index}>
-            <td>{data.firstname}</td>
-            <td>{data.lastname}</td>
+            <td>{data.firstName}</td>
+            <td>{data.lastName}</td>
             <td>{data.email}</td>
             <td
               onClick={() => {
+                data.isActive = "false";
+                console.log(data, index);
+                console.log("EMEMP", JSON.stringify(data));
                 dispatchRemoveEmployee(index);
+                dispatchDeleteEmployee(data);
               }}
               style={{
                 paddingLeft: 10,
@@ -37,6 +56,7 @@ const mapStateToProps = (state: any) => ({
 const mapDispatchToProps = (dispatch: any) => {
   return {
     dispatchRemoveEmployee: (index: number) => dispatch(removeEmployee(index)),
+    dispatchDeleteEmployee: (data: IEmployee) => dispatch(deleteEmployee(data)),
   };
 };
 

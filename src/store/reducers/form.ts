@@ -1,20 +1,20 @@
 const initialState = {
-  firstname: "",
-  lastname: "",
+  firstName: "",
+  lastName: "",
   email: "",
 };
 
 const reducer = (state = initialState, action: any = {}) => {
   switch (action.type) {
-    case "SET_FIRSTNAME":
+    case "SET_firstName":
       return {
         ...state,
-        firstname: action.firstname,
+        firstName: action.firstName,
       };
-    case "SET_LASTNAME":
+    case "SET_lastName":
       return {
         ...state,
-        lastname: action.lastname,
+        lastName: action.lastName,
       };
     case "SET_EMAIL":
       return {
