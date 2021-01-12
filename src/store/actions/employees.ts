@@ -1,4 +1,5 @@
 import * as Sentry from "@sentry/react";
+import { create } from "apisauce";
 interface IEmployee {
   firstName: string;
   lastName: string;
@@ -6,60 +7,84 @@ interface IEmployee {
   isActive: string;
 }
 
+const api = create({
+  baseURL: "http://34.220.1.118:3000",
+});
+
 export const fectchAllEmployees = () => (dispatch: any, getState: any) => {
-  console.log("I RAN!");
   const transaction = Sentry.startTransaction({
-    name: "test-transaction-JAMES",
+    name: "FE - Transaction : Inside GET_ALL_EMPLOYEES",
   });
   const span = transaction.startChild({
-    op: "fectchAllEmployees",
+    op: "FE - Span : Inside GET_ALL_EMPLOYEES",
     description: `GET`,
-  }); // This function returns a Span
+  });
+
+  Sentry.configureScope((scope) => {
+    scope.setTag("transaction_id", transaction.traceId);
+  });
+
   const runAsync = async () => {
-    const apiResponse = await fetch("http://34.220.1.118:3000/", {
-      method: "GET",
-      headers: {
-        Accept: "*/*",
-      },
+    api.setHeaders({
+      "Sentry-Trace": span.traceId,
+      Accept: "*/*",
     });
-    span.setTag("Response Status Code:", apiResponse.status);
-    const tableData = await apiResponse.json();
-    span.setData("AllEmployeeData", tableData);
-    span.finish();
-    console.log(tableData);
-    dispatch({
-      type: "SET_ALL_EMPLOYEES_TABLE_DATA",
-      payload: tableData,
-    });
+    const res = await api.get(`/`);
+    const { data } = res;
+
+    if (res.ok) {
+      dispatch({
+        type: "SET_ALL_EMPLOYEES_TABLE_DATA",
+        payload: data,
+      });
+      span.setTag("Response Status Code:", res.status);
+      span.setData("FE - Span : Inside GET_ALL_EMPLOYEES", data);
+      span.finish();
+      transaction.finish();
+    }
+    if (res.problem) {
+      Sentry.captureException(res);
+      console.error("API ERROR:", res.problem);
+    }
   };
   runAsync();
 };
 
-export const addEmployee = (data: IEmployee) => (
-  dispatch: any,
-  getState: any
-) => {
+export const addEmployee = (body: IEmployee) => (dispatch: any) => {
   const runAsync = async () => {
-    const apiResponse = await fetch("http://34.220.1.118:3000/", {
-      method: "POST",
-      headers: {
-        Accept: "*/*",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
+    const transaction = Sentry.startTransaction({
+      name: "FE - Transaction : Inside POST_NEW_EMPLOYEE",
     });
-    const tableData = await apiResponse;
-    console.log(tableData);
+    const span = transaction.startChild({
+      op: "FE - Span : Inside POST_NEW_EMPLOYEE",
+      description: `POST`,
+    });
+    api.setHeaders({
+      "Sentry-Trace": span.traceId,
+      Accept: "*/*",
+    });
+    const res = await api.post(`/`, body);
+    const { data } = res;
+    span.setTag("Response Status Code:", res.status);
+    span.setData("FE - Span : Inside POST_NEW_EMPLOYEE", data);
+    span.finish();
+    transaction.finish();
+    if (res.ok) {
+      dispatch({
+        type: "ADD_EMPLOYEE",
+        payload: {
+          firstName: body.firstName,
+          lastName: body.lastName,
+          email: body.email,
+        },
+      });
+    }
+    if (res.problem) {
+      Sentry.captureException(res);
+      console.error("API ERROR:", res.problem);
+    }
   };
   runAsync();
-  return dispatch({
-    type: "ADD_EMPLOYEE",
-    payload: {
-      firstName: data.firstName,
-      lastName: data.lastName,
-      email: data.email,
-    },
-  });
 };
 
 export const removeEmployee = (index: number) => (
@@ -72,21 +97,35 @@ export const removeEmployee = (index: number) => (
   });
 };
 
-export const deleteEmployee = (data: IEmployee) => (
+export const deleteEmployee = (body: IEmployee) => (
   dispatch: any,
   getState: any
 ) => {
   const runAsync = async () => {
-    const apiResponse = await fetch("http://34.220.1.118:3000/", {
-      method: "PUT",
-      headers: {
-        Accept: "*/*",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
+    const transaction = Sentry.startTransaction({
+      name: "FE - Transaction : Inside PUT_DELETE_EMPLOYEE",
     });
-    const tableData = await apiResponse;
-    console.log(tableData);
+    const span = transaction.startChild({
+      op: "FE - Span : Inside PUT_DELETE_EMPLOYEE",
+      description: `PUT`,
+    });
+
+    api.setHeaders({
+      "Sentry-Trace": span.traceId,
+      Accept: "*/*",
+    });
+    const res = await api.put(`/`, body);
+    const { data } = res;
+    if (res.ok) {
+      span.setTag("Response Status Code:", res.status);
+      span.setData("FE - Span: Inside PUT_DELETE_EMPLOYEE", data);
+      span.finish();
+      transaction.finish();
+    }
+    if (res.problem) {
+      Sentry.captureException(res);
+      console.error("API ERROR:", res.problem);
+    }
   };
   runAsync();
 };

@@ -26,8 +26,7 @@ const TableRow = ({
             <td
               onClick={() => {
                 data.isActive = "false";
-                console.log(data, index);
-                console.log("This Is Payload To Backend", JSON.stringify(data));
+
                 dispatchRemoveEmployee(index);
                 dispatchDeleteEmployee(data);
               }}
